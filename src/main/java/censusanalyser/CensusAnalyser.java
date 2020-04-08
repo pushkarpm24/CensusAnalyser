@@ -27,9 +27,12 @@ public class CensusAnalyser {
                         CensusAnalyserException.ExceptionType.WRONG_FILE_HEADER);
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.WRONG_FILE_DELIMETER);
+        }  catch (CSVBuilderException e) {
+            throw new CensusAnalyserException(e.getMessage(),e.type.name());
         }
-
     }
+
+
 
     public int loadIndiaStateData(String csvFilePath) throws CensusAnalyserException {
         this.checkValidCSVFile(csvFilePath);
@@ -41,15 +44,20 @@ public class CensusAnalyser {
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
-        } catch (RuntimeException e) {
+        }
+        catch (RuntimeException e) {
             if (e.getMessage().contains("header!"))
                 throw new CensusAnalyserException(e.getMessage(),
                         CensusAnalyserException.ExceptionType.WRONG_FILE_HEADER);
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.WRONG_FILE_DELIMETER);
         }
-
+        catch (CSVBuilderException e) {
+            throw new CensusAnalyserException(e.getMessage(),e.type.name());
+        }
     }
+
+
 
     private void checkValidCSVFile(String csvFilePath) throws CensusAnalyserException {
         if (!csvFilePath.contains(".csv"))
