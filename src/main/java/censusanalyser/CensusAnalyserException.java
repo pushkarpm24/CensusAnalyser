@@ -7,7 +7,8 @@ public class CensusAnalyserException extends Exception {
         WRONG_FILE_TYPE,
         WRONG_FILE_DELIMETER,
         WRONG_FILE_HEADER,
-        UNABLE_TO_PARSE
+        UNABLE_TO_PARSE,
+        NO_CENSUS_DATA
     }
 
     ExceptionType type;

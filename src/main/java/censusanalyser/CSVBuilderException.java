@@ -7,6 +7,7 @@ public class CSVBuilderException extends Throwable {
         WRONG_FILE_DELIMETER,
         WRONG_FILE_HEADER,
         UNABLE_TO_PARSE
+
     }
     ExceptionType type;
 
