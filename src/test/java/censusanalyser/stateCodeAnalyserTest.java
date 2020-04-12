@@ -69,10 +69,10 @@ public class stateCodeAnalyserTest {
     public void givenIndiaStateCodeData_withRandomStateName_ShouldReturnIndiaStateNameSortedOrder() {
         try {
             CensusAnalyser censusAnalyser = new CensusAnalyser();
-            String stateWiseSortedStateCodeCensusData = censusAnalyser.getStateWiseSortedStateCodeCensusData(INDIA_STATE_CODE_CSV_FILE_PATH);
+            String stateWiseSortedStateCodeCensusData = censusAnalyser.getStateWiseSortedCensusData(INDIA_STATE_CODE_CSV_FILE_PATH);
             System.out.println(stateWiseSortedStateCodeCensusData);
             IndiaStateCodeCSV[] censusCSV = new Gson().fromJson(stateWiseSortedStateCodeCensusData, IndiaStateCodeCSV[].class);
-            Assert.assertEquals("AD",censusCSV[0].stateCode);
+            Assert.assertEquals("AN",censusCSV[0].stateCode);
         } catch (CensusAnalyserException e) {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM,e.type);
         }
