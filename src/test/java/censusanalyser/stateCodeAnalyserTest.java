@@ -1,5 +1,6 @@
 package censusanalyser;
 
+import com.google.gson.Gson;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -61,6 +62,19 @@ public class stateCodeAnalyserTest {
 
         } catch (CensusAnalyserException e) {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.WRONG_FILE_HEADER, e.type);
+        }
+    }
+
+    @Test
+    public void givenIndiaStateCodeData_withRandomStateName_ShouldReturnIndiaStateNameSortedOrder() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            String stateWiseSortedStateCodeCensusData = censusAnalyser.getStateWiseSortedStateCodeCensusData(INDIA_STATE_CODE_CSV_FILE_PATH);
+            System.out.println(stateWiseSortedStateCodeCensusData);
+            IndiaStateCodeCSV[] censusCSV = new Gson().fromJson(stateWiseSortedStateCodeCensusData, IndiaStateCodeCSV[].class);
+            Assert.assertEquals("AD",censusCSV[0].stateCode);
+        } catch (CensusAnalyserException e) {
+            Assert.assertEquals(CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM,e.type);
         }
     }
 }
