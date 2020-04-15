@@ -10,17 +10,17 @@ public class CensusDAO {
     private String tin;
 
     public CensusDAO(IndiaCensusCSV indiaCensusCSV) {
-        this.state = indiaCensusCSV.state;
-        this.population = indiaCensusCSV.population;
-        this.areaInSqKm = indiaCensusCSV.areaInSqKm;
-        this.densityPerSqKm = indiaCensusCSV.densityPerSqKm;
+        this.state = indiaCensusCSV.getState();
+        this.population = indiaCensusCSV.getPopulation();
+        this.areaInSqKm = indiaCensusCSV.getAreaInSqKm();
+        this.densityPerSqKm = indiaCensusCSV.getDensityPerSqKm();
     }
 
     public CensusDAO(IndiaStateCodeCSV indiaStateCodeCSV) {
-        this.srNo = indiaStateCodeCSV.SrNo;
-        this.state = indiaStateCodeCSV.stateName;
-        this.stateCode = indiaStateCodeCSV.stateCode;
-        this.tin = indiaStateCodeCSV.tin;
+        this.srNo = indiaStateCodeCSV.getSrNo();
+        this.state = indiaStateCodeCSV.getStateName();
+        this.stateCode = indiaStateCodeCSV.getStateCode();
+        this.tin = indiaStateCodeCSV.getTin();
     }
     public String getSrNo() {
         return srNo;
