@@ -18,19 +18,18 @@ import static javafx.scene.input.KeyCode.T;
 
 public class CensusAnalyser {
 
-    List csvFileList = null;
-    Map csvFileMap = null;
+    List csvFileList = new ArrayList<CensusDAO>();
+    Map csvFileMap =  new HashMap<String, CensusDAO>();
 
     public int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
         this.checkValidCSVFile(csvFilePath);
         try (Reader reader = newBufferedReader(Paths.get(csvFilePath))){
-            csvFileMap = new HashMap<String, IndiaCensusCSV>();
-            csvFileList = new ArrayList<IndiaCensusCSV>();
+
             IcsvBuilder csvBuilder = createCSVBuilder();
             Iterator<IndiaCensusCSV> censusCSVIterator = csvBuilder.getCSVFileIterator(reader,IndiaCensusCSV.class);
             while (censusCSVIterator.hasNext()) {
-                IndiaCensusCSV indiaCensusCSV = censusCSVIterator.next();
-                this.csvFileMap.put(indiaCensusCSV.state,indiaCensusCSV);
+                CensusDAO censusDAO = new CensusDAO(censusCSVIterator.next());
+                this.csvFileMap.put(censusDAO.getState(), censusDAO);
                 this.csvFileList = (List) csvFileMap.values().stream().collect(Collectors.toList());
             }
 
@@ -56,12 +55,11 @@ public class CensusAnalyser {
         this.checkValidCSVFile(csvFilePath);
         try (Reader reader = newBufferedReader(Paths.get(csvFilePath))){
             IcsvBuilder csvBuilder = createCSVBuilder();
-            csvFileMap = new HashMap<String, IndiaStateCodeCSV>();
-            csvFileList = new ArrayList<IndiaStateCodeCSV>();
+
             Iterator<IndiaStateCodeCSV> IndiaStateCodeCSVIterator = csvBuilder.getCSVFileIterator(reader,IndiaStateCodeCSV.class);
             while (IndiaStateCodeCSVIterator.hasNext()) {
-                IndiaStateCodeCSV indiaStateCodeCSV = IndiaStateCodeCSVIterator.next();
-                this.csvFileMap.put(indiaStateCodeCSV.stateName,indiaStateCodeCSV);
+                CensusDAO censusDAO = new CensusDAO (IndiaStateCodeCSVIterator.next());
+                this.csvFileMap.put(censusDAO.getStateCode(), censusDAO);
                 this.csvFileList = (List) csvFileMap.values().stream().collect(Collectors.toList());
             }
 
@@ -91,15 +89,16 @@ public class CensusAnalyser {
 
 
 
-    public String getStateWiseSortedCensusData(String csvFilePath) throws CensusAnalyserException {
+    public String  getPopulationWiseSortedCensusData(String csvFilePath) throws CensusAnalyserException {
         if (csvFilePath == "./src/test/resources/IndiaStateCensusData.csv") {
             loadIndiaCensusData(csvFilePath);
             if (csvFileList == null || csvFileList.size() == 0) {
                 throw new CensusAnalyserException("NO_CENSUS_DATA", CensusAnalyserException.ExceptionType.NO_CENSUS_DATA);
             }
 
-            Comparator<IndiaCensusCSV> censusComparator = Comparator.comparing(census -> census.state);
-            this.sort(csvFileList, censusComparator);
+            Comparator<CensusDAO> censusComparator = Comparator.comparing(censusDAO -> censusDAO.getPopulation());
+            this.sort(censusComparator);
+            Collections.reverse(csvFileList);
             String toJson = new Gson().toJson(csvFileList);
             return toJson;
         }
@@ -109,17 +108,17 @@ public class CensusAnalyser {
             throw new CensusAnalyserException("NO_CENSUS_DATA", CensusAnalyserException.ExceptionType.NO_CENSUS_DATA);
         }
 
-        Comparator<IndiaStateCodeCSV> censusComparator = Comparator.comparing(census -> census.stateName);
-        this.sort(csvFileList, censusComparator);
+        Comparator<CensusDAO> censusComparator = Comparator.comparing(censusDAO -> censusDAO.getStateCode());
+        this.sort(censusComparator);
         String toJson = new Gson().toJson(csvFileList);
         return toJson;
     }
 
-        private < T > void sort (List < T > csvFileList, Comparator < T > censusComparator){
+    private void sort(Comparator<CensusDAO> censusComparator){
             for (int i = 0; i < csvFileList.size(); i++) {
                 for (int j = 0; j < csvFileList.size() - i - 1; j++) {
-                    T census1 = csvFileList.get(j);
-                    T census2 = csvFileList.get(j + 1);
+                    CensusDAO census1 = (CensusDAO) csvFileList.get(j);
+                    CensusDAO census2 = (CensusDAO) csvFileList.get(j + 1);
                     if (censusComparator.compare(census1, census2) > 0) {
                         csvFileList.set(j, census2);
                         csvFileList.set(j + 1, census1);
