@@ -81,7 +81,38 @@ public class CensusAnalyser {
         }
     }
 
-
+    public int loadUSCensusData(String csvFilePath) throws CensusAnalyserException {
+        this.checkValidCSVFile(csvFilePath);
+        int numOfRecords = 0;
+        try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath)))
+        {
+            IcsvBuilder csvBuilder = createCSVBuilder();
+            Iterator<USCensusCSV> usCensusCSVIterator = csvBuilder.getCSVFileIterator(reader, USCensusCSV.class);
+            while (usCensusCSVIterator.hasNext()) {
+                USCensusCSV USCensus = usCensusCSVIterator.next();
+                System.out.println("State ID: " + USCensus.getStateID());
+                System.out.println("State Name : " + USCensus.getState());
+                System.out.println("Area : " + USCensus.getArea());
+                System.out.println("Housing units : " + USCensus.getHousingUnits());
+                System.out.println("Water area : " + USCensus.getWaterArea());
+                System.out.println("Land Area : " + USCensus.getLandArea());
+                System.out.println("Density : " + USCensus.getPopulationDensity());
+                System.out.println("Population : " + USCensus.getPopulation());
+                System.out.println("Housing Density : " + USCensus.getHousingDensity());
+                numOfRecords++;
+            }
+            return numOfRecords;
+        }  catch (IOException e) {
+            throw new CensusAnalyserException(e.getMessage(),
+                    CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
+        } catch (RuntimeException e) {
+            if (e.getMessage().contains("header!"))
+                throw new CensusAnalyserException(e.getMessage(), CensusAnalyserException.ExceptionType.WRONG_FILE_HEADER);
+            throw new CensusAnalyserException(e.getMessage(), CensusAnalyserException.ExceptionType.WRONG_FILE_DELIMETER);
+        } catch (CSVBuilderException e) {
+            throw new CensusAnalyserException(e.getMessage(), CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
+        }
+    }
 
     private void checkValidCSVFile(String csvFilePath) throws CensusAnalyserException {
         if (!csvFilePath.contains(".csv"))
