@@ -21,13 +21,13 @@ public abstract class CensusAdapter<T> {
             Iterable<T> csvFileIterable = () -> csvFileIterator;
             if (censusCSVClass.getName().contains("IndiaCensusCSV"))
             {
-                while (csvFileIterator.hasNext()) {
-                    CensusDAO censusDAO = new CensusDAO((IndiaCensusCSV) csvFileIterator.next());
-                    csvFileMap.put(censusDAO.getState(), censusDAO);
-                }
-//                StreamSupport.stream(csvFileIterable.spliterator(), false)
-//                        .map(IndiaCensusCSV.class::cast)
-//                        .forEach(censusCSV -> csvFileMap.put(censusCSV.getState(), new CensusDAO(censusCSV)));
+//                while (csvFileIterator.hasNext()) {
+//                    CensusDAO censusDAO = new CensusDAO((IndiaCensusCSV) csvFileIterator.next());
+//                    csvFileMap.put(censusDAO.getState(), censusDAO);
+//                }
+                StreamSupport.stream(csvFileIterable.spliterator(), false)
+                        .map(IndiaCensusCSV.class::cast)
+                        .forEach(censusCSV -> csvFileMap.put(censusCSV.getState(), new CensusDAO(censusCSV)));
             } else if (censusCSVClass.getName().contains("USCensusCSV"))
             {
                 StreamSupport.stream(csvFileIterable.spliterator(), false)

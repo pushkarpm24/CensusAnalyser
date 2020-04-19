@@ -11,8 +11,7 @@ public class CensusDAO {
     private String stateID;
     private double housingDensity;
 
-    public CensusDAO() {
-    }
+
 
     public CensusDAO(IndiaCensusCSV indiaCensusCSV) {
         this.state = indiaCensusCSV.getState();
@@ -35,6 +34,10 @@ public class CensusDAO {
         this.densityPerSqKm = usCensusCSV.getPopulationDensity();
         this.stateID = usCensusCSV.getStateID();
         this.housingDensity = usCensusCSV.getHousingDensity();
+    }
+
+    public CensusDAO() {
+
     }
 
     public String getStateID() {
