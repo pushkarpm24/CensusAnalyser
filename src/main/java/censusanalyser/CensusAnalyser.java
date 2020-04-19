@@ -38,7 +38,7 @@ public class CensusAnalyser<E> {
     List csvFileList =new ArrayList<CensusDAO>();
     Map<String, CensusDAO> csvFileMap = new HashMap<>();
 
-    public int loadCensusData(Country country, String... csvFilePath) throws CensusAnalyserException {
+    public int loadCensusData(Country country, String  csvFilePath) throws CensusAnalyserException {
         csvFileMap = CensusAdapterFactory.getCensusData(country, csvFilePath);
         csvFileList = (List) csvFileMap.values().stream().collect(Collectors.toList());
         return csvFileMap.size();
